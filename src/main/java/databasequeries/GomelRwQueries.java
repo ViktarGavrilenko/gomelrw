@@ -37,7 +37,7 @@ public class GomelRwQueries {
     private static final String INSERT_RECORD_IN_BASE = "insert into data_gomelrw " +
             "(id_people, id_pred, id_division, id_post, id_tabnum) VALUES  (%s, %s, %s, %s, %s)";
 
-    private static final String INSERT_IN_DATA_GOMELRW_OLD =
+    private static final String INSERT_IN_GOMELRW_OLD =
             "insert into data_gomelrw_old (id_people, id_pred, id_division, id_post, " +
                     "id_tabnum, work_tel, e_mail, datasaveinbase ) VALUES  (%s, %s, %s, %s, %s, '%s', '%s', '%s')";
     private static final String SELECT_PEOPLE_ID = "SELECT * FROM data_gomelrw where id_people='%s'";
@@ -62,6 +62,11 @@ public class GomelRwQueries {
             "post, division d, tabnum, pred where dg.id_people=p.id and dg.id_post=post.id and dg.id_division=d.id " +
             "and dg.id_pred=pred.id and dg.id_tabnum=tabnum.id and " +
             "date_format(datasaveinbase, '%Y-%m-%d')!=CURDATE() order by namepred, firstname, name";
+
+    private static final String SELECT_NOT_RELEVANT_TODAY = "SELECT * FROM data_gomelrw WHERE datasaveinbase < CURDATE()";
+    private static final String INSERT_ENTRY_IN_GOMELRW_FORMER = "insert into data_gomelrw_former " +
+            "(id_people, id_pred, id_division, id_post, id_tabnum, work_tel, e_mail, datasaveinbase) VALUES  " +
+            "(%s, %s, %s, %s, %s, '%s', '%s', '%s')";
 
     public static int getIdPeopleInBase(People people) {
         String selectQuery = String.format(SELECT_IS_PEOPLE_IN_BASE,
@@ -107,7 +112,7 @@ public class GomelRwQueries {
                 resultSet = sendSelectQuery(
                         String.format(SELECT_PEOPLE_ID, employee.idPeople));
                 if (resultSet.next()) {
-                    sendSqlQuery(String.format(INSERT_IN_DATA_GOMELRW_OLD,
+                    sendSqlQuery(String.format(INSERT_IN_GOMELRW_OLD,
                             resultSet.getInt(id_people.toString()),
                             resultSet.getInt(id_pred.toString()),
                             resultSet.getInt(id_division.toString()),
@@ -147,5 +152,28 @@ public class GomelRwQueries {
 
     public static List<AnswerGomelRw> getListDismissEmployee() {
         return getListEmployee(DISMISS_EMPLOYEE);
+    }
+
+    public static void moveAndDeleteData() {
+        ResultSet resultSet = sendSelectQuery(SELECT_NOT_RELEVANT_TODAY);
+        try {
+            while (resultSet.next()) {
+                sendSqlQuery(String.format(INSERT_ENTRY_IN_GOMELRW_FORMER,
+                        resultSet.getInt(id_people.toString()),
+                        resultSet.getInt(id_pred.toString()),
+                        resultSet.getInt(id_division.toString()),
+                        resultSet.getInt(id_post.toString()),
+                        resultSet.getInt(id_tabnum.toString()),
+                        resultSet.getString(work_tel.toString()),
+                        resultSet.getString(e_mail.toString()),
+                        resultSet.getString(datasaveinbase.toString())
+                ));
+                sendSqlQuery(String.format(DELETE_FROM_GOMELRW, resultSet.getInt(id_people.toString())));
+            }
+
+        } catch (SQLException e) {
+            Logger.getInstance().error(SQL_QUERY_FAILED + e);
+            throw new IllegalArgumentException(SQL_QUERY_FAILED, e);
+        }
     }
 }

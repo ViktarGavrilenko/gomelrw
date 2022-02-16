@@ -52,7 +52,7 @@ public class TestGomelRw {
             }
             Logger.getInstance().info(String.format("The number of people on %s is %s", day, usersList.size()));
         }
-        Logger.getInstance().info("------------Finish Scan--------------");
+        Logger.getInstance().info("------------Poll completed--------------");
         int countScanPeopleToday = getCountScanPeopleToday();
         int totalEntries = getTotalEntries();
         Logger.getInstance().info(String.format("%s records were processed today", countScanPeopleToday));
@@ -74,6 +74,13 @@ public class TestGomelRw {
                     ++count, employees.f, employees.i, employees.o, convertStrToStr(employees.dt_birthday), employees.sex,
                     employees.namepred, employees.divisionname, employees.namepost));
         }
+        Logger.getInstance().info("Moved and deleted irrelevant data");
+        moveAndDeleteData();
+        Logger.getInstance().info("------------Finish Scan--------------");
+        Logger.getInstance().info("------------Finish Scan--------------");
+        Logger.getInstance().info("------------Finish Scan--------------");
+        Logger.getInstance().info("------------Finish Scan--------------");
+        Logger.getInstance().info("------------Finish Scan--------------");
     }
 
     @AfterTest
