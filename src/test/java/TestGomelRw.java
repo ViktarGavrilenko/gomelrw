@@ -76,10 +76,8 @@ public class TestGomelRw {
         }
         Logger.getInstance().info("Moved and deleted irrelevant data");
         moveAndDeleteData();
-        Logger.getInstance().info("------------Finish Scan--------------");
-        Logger.getInstance().info("------------Finish Scan--------------");
-        Logger.getInstance().info("------------Finish Scan--------------");
-        Logger.getInstance().info("------------Finish Scan--------------");
+        Logger.getInstance().info("Number of employees in enterprises");
+        addInBaseNumberEmployeeEnterprises();
         Logger.getInstance().info("------------Finish Scan--------------");
     }
 

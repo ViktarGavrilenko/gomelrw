@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static databasequeries.TableColumnNames.*;
+import static databasequeries.TableNumberPeopleEnterprises.namepred;
+import static databasequeries.TableNumberPeopleEnterprises.number;
 import static utils.MySqlUtils.*;
 import static utils.StringUtils.convertDateToStr;
 
@@ -67,6 +69,11 @@ public class GomelRwQueries {
     private static final String INSERT_ENTRY_IN_GOMELRW_FORMER = "insert into data_gomelrw_former " +
             "(id_people, id_pred, id_division, id_post, id_tabnum, work_tel, e_mail, datasaveinbase) VALUES  " +
             "(%s, %s, %s, %s, %s, '%s', '%s', '%s')";
+
+    private static final String SELECT_NUMBER_PEOPLE_ENTERPRISES = "SELECT count(*) as number, id_pred, namepred  " +
+            "FROM pred, data_gomelrw WHERE pred.id = data_gomelrw.id_pred group by id_pred order by number DESC";
+    private static final String INSERT_NUMBER_PEOPLE_ENTERPRISES = "insert into number_people_enterprises " +
+            "(id_pred, number_people) VALUES (%s, %s)";
 
     public static int getIdPeopleInBase(People people) {
         String selectQuery = String.format(SELECT_IS_PEOPLE_IN_BASE,
@@ -169,6 +176,23 @@ public class GomelRwQueries {
                         resultSet.getString(datasaveinbase.toString())
                 ));
                 sendSqlQuery(String.format(DELETE_FROM_GOMELRW, resultSet.getInt(id_people.toString())));
+            }
+
+        } catch (SQLException e) {
+            Logger.getInstance().error(SQL_QUERY_FAILED + e);
+            throw new IllegalArgumentException(SQL_QUERY_FAILED, e);
+        }
+    }
+
+    public static void addInBaseNumberEmployeeEnterprises() {
+        ResultSet resultSet = sendSelectQuery(SELECT_NUMBER_PEOPLE_ENTERPRISES);
+        try {
+            while (resultSet.next()) {
+                sendSqlQuery(String.format(INSERT_NUMBER_PEOPLE_ENTERPRISES,
+                        resultSet.getInt(TableNumberPeopleEnterprises.id_pred.toString()),
+                        resultSet.getInt(number.toString())));
+                Logger.getInstance().info(String.format("%s - %s ",
+                        resultSet.getString(namepred.toString()), resultSet.getInt(number.toString())));
             }
 
         } catch (SQLException e) {
