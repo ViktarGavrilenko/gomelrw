@@ -192,7 +192,7 @@ public class GomelRwQueries {
                         resultSet.getInt(TableNumberPeopleEnterprises.id_pred.toString()),
                         resultSet.getInt(number.toString())));
                 Logger.getInstance().info(String.format("%s - %s ",
-                        resultSet.getString(namepred.toString()), resultSet.getInt(number.toString())));
+                        resultSet.getString(number.toString()), resultSet.getInt(namepred.toString())));
             }
 
         } catch (SQLException e) {
