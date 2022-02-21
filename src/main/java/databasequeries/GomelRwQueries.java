@@ -191,7 +191,7 @@ public class GomelRwQueries {
                 sendSqlQuery(String.format(INSERT_NUMBER_PEOPLE_ENTERPRISES,
                         resultSet.getInt(TableNumberPeopleEnterprises.id_pred.toString()),
                         resultSet.getInt(number.toString())));
-                Logger.getInstance().info(String.format("%s - %s ",
+                Logger.getInstance().info(String.format("%s - %s",
                         resultSet.getString(number.toString()), resultSet.getInt(namepred.toString())));
             }
 
