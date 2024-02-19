@@ -6,7 +6,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class StringUtils {
     private static final String INVALID_DATE = "Invalid date %s. %s";
@@ -15,6 +17,7 @@ public class StringUtils {
     private static final String DATE_PATTERN_FOR_SQL = "yyyy-MM-dd";
     private static final String DATE_PATTERN_SCAN = "yyyyMMdd";
     private static final String YEAR_OF_BIRTH_OF_WOMAN = "0004";
+    private static final List<Integer> LIST_NOT_UPDATED_PRED = new ArrayList<>(List.of(5));
 
     public static Date convertStrToDate(String date) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN);
@@ -49,7 +52,23 @@ public class StringUtils {
         if (word == null || word.isEmpty()) {
             return "";
         }
-        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+        StringBuilder outWord = new StringBuilder();
+        for (int i = 0; i < word.length(); i++) {
+            if (word.charAt(i) == '-' && i != word.length() - 1) {
+                outWord.append(word.charAt(i));
+                if (word.charAt(i + 1) != '-') {
+                    outWord.append(word.substring(i + 1, i + 2).toUpperCase());
+                    i++;
+                }
+            } else {
+                if (i == 0) {
+                    outWord.append(word.substring(i, i + 1).toUpperCase());
+                } else {
+                    outWord.append(word.substring(i, i + 1).toLowerCase());
+                }
+            }
+        }
+        return outWord.toString();
     }
 
     public static String convertStrToStr(String date) {
@@ -61,5 +80,14 @@ public class StringUtils {
         } else {
             return localDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
         }
+    }
+
+    public static boolean isUpdate(int idPred) {
+        for (int idNotUpdatedPred : LIST_NOT_UPDATED_PRED) {
+            if (idPred == idNotUpdatedPred) {
+                return false;
+            }
+        }
+        return true;
     }
 }

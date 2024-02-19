@@ -41,14 +41,16 @@ public class TestGomelRw {
             List<AnswerGomelRw> usersList = getUserGomelRw(HttpStatus.SC_OK, convertLocalDateToStr(day));
             for (AnswerGomelRw answer : usersList) {
                 Employee employee = new Employee();
-                People people = new People(fistUpCase(answer.f), fistUpCase(answer.i), fistUpCase(answer.o),
-                        convertStrToDate(answer.dt_birthday), answer.sex.toUpperCase());
-                employee.idPeople = getIdPeopleInBase(people);
-                employee.idPost = getIdPostInBase(answer.namepost);
                 employee.idPred = getIdPredInBase(answer.namepred);
-                employee.idDivision = getIdDivisionInBase(answer.divisionname);
-                employee.idTabNum = getIdTabNumInBase(answer.tabnum);
-                addRecordInBase(employee);
+                if (isUpdate(employee.idPred)) {
+                    People people = new People(answer.f, answer.i, answer.o,
+                            convertStrToDate(answer.dt_birthday), answer.sex.toUpperCase());
+                    employee.idPeople = getIdPeopleInBase(people);
+                    employee.idPost = getIdPostInBase(answer.namepost);
+                    employee.idDivision = getIdDivisionInBase(answer.divisionname);
+                    employee.idTabNum = getIdTabNumInBase(answer.tabnum);
+                    addRecordInBase(employee);
+                }
             }
             Logger.getInstance().info(String.format("The number of people on %s is %s", day, usersList.size()));
         }

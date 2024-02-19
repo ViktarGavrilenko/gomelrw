@@ -14,6 +14,7 @@ import static databasequeries.TableNumberPeopleEnterprises.namepred;
 import static databasequeries.TableNumberPeopleEnterprises.number;
 import static utils.MySqlUtils.*;
 import static utils.StringUtils.convertDateToStr;
+import static utils.StringUtils.fistUpCase;
 
 public class GomelRwQueries {
     private static final String SELECT_IS_PEOPLE_IN_BASE =
@@ -78,9 +79,12 @@ public class GomelRwQueries {
     public static int getIdPeopleInBase(People people) {
         String selectQuery = String.format(SELECT_IS_PEOPLE_IN_BASE,
                 people.f, people.i, people.o, convertDateToStr(people.dt_birthday), people.sex);
-        String insertQuery = String.format(INSERT_PEOPLE_IN_BASE,
-                people.f, people.i, people.o, convertDateToStr(people.dt_birthday), people.sex);
-        return getIdAndAddIfNot(insertQuery, selectQuery);
+        return getIdAndAddIfNotPeople(people, selectQuery);
+    }
+
+    public static String getInsertPeopleInBase(People people){
+        return String.format(INSERT_PEOPLE_IN_BASE, fistUpCase(people.f), fistUpCase(people.i), fistUpCase(people.o),
+                convertDateToStr(people.dt_birthday), people.sex);
     }
 
     public static int getIdPostInBase(String postName) {

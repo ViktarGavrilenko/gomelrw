@@ -4,12 +4,14 @@ import aquality.selenium.core.logging.Logger;
 import aquality.selenium.core.utilities.ISettingsFile;
 import aquality.selenium.core.utilities.JsonSettingsFile;
 import models.AnswerGomelRw;
+import models.People;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static databasequeries.ColumnEmployee.*;
+import static databasequeries.GomelRwQueries.getInsertPeopleInBase;
 
 public class MySqlUtils {
     protected static final ISettingsFile MYSQL_CONFIG_FILE = new JsonSettingsFile("mysqlConfig.json");
@@ -79,6 +81,21 @@ public class MySqlUtils {
         try {
             if (!resultSet.next()) {
                 sendSqlQuery(insertStr);
+                resultSet = sendSelectQuery(selectStr);
+                resultSet.next();
+            }
+            return resultSet.getInt(1);
+        } catch (SQLException e) {
+            Logger.getInstance().error(SQL_QUERY_FAILED + e);
+            throw new IllegalArgumentException(SQL_QUERY_FAILED, e);
+        }
+    }
+
+    public static int getIdAndAddIfNotPeople(People people, String selectStr) {
+        ResultSet resultSet = sendSelectQuery(selectStr);
+        try {
+            if (!resultSet.next()) {
+                sendSqlQuery(getInsertPeopleInBase(people));
                 resultSet = sendSelectQuery(selectStr);
                 resultSet.next();
             }
