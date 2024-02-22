@@ -82,7 +82,7 @@ public class StringUtils {
         }
     }
 
-    public static boolean isUpdate(int idPred) {
+    public static boolean isUpdatePred(int idPred) {
         for (int idNotUpdatedPred : LIST_NOT_UPDATED_PRED) {
             if (idPred == idNotUpdatedPred) {
                 return false;

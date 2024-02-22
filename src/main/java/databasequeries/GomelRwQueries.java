@@ -13,8 +13,7 @@ import static databasequeries.TableColumnNames.*;
 import static databasequeries.TableNumberPeopleEnterprises.namepred;
 import static databasequeries.TableNumberPeopleEnterprises.number;
 import static utils.MySqlUtils.*;
-import static utils.StringUtils.convertDateToStr;
-import static utils.StringUtils.fistUpCase;
+import static utils.StringUtils.*;
 
 public class GomelRwQueries {
     private static final String SELECT_IS_PEOPLE_IN_BASE =
@@ -82,7 +81,7 @@ public class GomelRwQueries {
         return getIdAndAddIfNotPeople(people, selectQuery);
     }
 
-    public static String getInsertPeopleInBase(People people){
+    public static String getInsertPeopleInBase(People people) {
         return String.format(INSERT_PEOPLE_IN_BASE, fistUpCase(people.f), fistUpCase(people.i), fistUpCase(people.o),
                 convertDateToStr(people.dt_birthday), people.sex);
     }
@@ -169,17 +168,19 @@ public class GomelRwQueries {
         ResultSet resultSet = sendSelectQuery(SELECT_NOT_RELEVANT_TODAY);
         try {
             while (resultSet.next()) {
-                sendSqlQuery(String.format(INSERT_ENTRY_IN_GOMELRW_FORMER,
-                        resultSet.getInt(id_people.toString()),
-                        resultSet.getInt(id_pred.toString()),
-                        resultSet.getInt(id_division.toString()),
-                        resultSet.getInt(id_post.toString()),
-                        resultSet.getInt(id_tabnum.toString()),
-                        resultSet.getString(work_tel.toString()),
-                        resultSet.getString(e_mail.toString()),
-                        resultSet.getString(datasaveinbase.toString())
-                ));
-                sendSqlQuery(String.format(DELETE_FROM_GOMELRW, resultSet.getInt(id_people.toString())));
+                if (isUpdatePred(resultSet.getInt(id_pred.toString()))) {
+                    sendSqlQuery(String.format(INSERT_ENTRY_IN_GOMELRW_FORMER,
+                            resultSet.getInt(id_people.toString()),
+                            resultSet.getInt(id_pred.toString()),
+                            resultSet.getInt(id_division.toString()),
+                            resultSet.getInt(id_post.toString()),
+                            resultSet.getInt(id_tabnum.toString()),
+                            resultSet.getString(work_tel.toString()),
+                            resultSet.getString(e_mail.toString()),
+                            resultSet.getString(datasaveinbase.toString())
+                    ));
+                    sendSqlQuery(String.format(DELETE_FROM_GOMELRW, resultSet.getInt(id_people.toString())));
+                }
             }
 
         } catch (SQLException e) {

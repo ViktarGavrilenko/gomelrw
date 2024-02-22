@@ -42,7 +42,7 @@ public class TestGomelRw {
             for (AnswerGomelRw answer : usersList) {
                 Employee employee = new Employee();
                 employee.idPred = getIdPredInBase(answer.namepred);
-                if (isUpdate(employee.idPred)) {
+                if (isUpdatePred(employee.idPred)) {
                     People people = new People(answer.f, answer.i, answer.o,
                             convertStrToDate(answer.dt_birthday), answer.sex.toUpperCase());
                     employee.idPeople = getIdPeopleInBase(people);
@@ -71,10 +71,12 @@ public class TestGomelRw {
         count = 0;
         Logger.getInstance().info(String.format("Number of dismiss employees %s", totalEntries - countScanPeopleToday));
         Logger.getInstance().info("Dismiss employees:");
-        for (AnswerGomelRw employees : getListDismissEmployee()) {
-            Logger.getInstance().info(String.format("%s. %s %s %s | %s | sex %s | %s | %s | %s |",
-                    ++count, employees.f, employees.i, employees.o, convertStrToStr(employees.dt_birthday), employees.sex,
-                    employees.namepred, employees.divisionname, employees.namepost));
+        for (AnswerGomelRw employee : getListDismissEmployee()) {
+            if (isUpdatePred(getIdPredInBase(employee.namepred))) {
+                Logger.getInstance().info(String.format("%s. %s %s %s | %s | sex %s | %s | %s | %s |",
+                        ++count, employee.f, employee.i, employee.o, convertStrToStr(employee.dt_birthday), employee.sex,
+                        employee.namepred, employee.divisionname, employee.namepost));
+            }
         }
         Logger.getInstance().info("Moved and deleted irrelevant data");
         moveAndDeleteData();
